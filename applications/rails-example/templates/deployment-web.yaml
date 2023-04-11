@@ -1,26 +1,3 @@
-# Creates a Deployment and Service for a web application listening on .Values.web.port.
-#
-# Liveness and readiness probes are commented out by default. You may want to make
-# an initial deploy without them and figure out which requests to use before enabling.
-#
-# Example values.yaml:
-# image: docker.io/reclaimthestack/rails-example:latest
-# deployments:
-#   web:
-#     port: 3000
-#     replicas: 1
-#     memory: 512Mi
-#     cpu: 250m
-#     # Put ENV which should only apply to the web deployment here
-#     env:
-#       - name: WEB_CONCURRENCY
-#         value: "2"
-#     # command: <custom-command> (if you don't want to run bin/rails server)
-# envFrom:
-#   - secretRef:
-#       name: rails-example # Create a dedicated application secret with k secrets:create rails-example
-# env: [] # Put ENV which applies to all deployments here
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,7 +14,7 @@ spec:
       labels:
         app: {{ .Chart.Name }}-web
       annotations:
-        linkerd.io/inject: enabled
+        # linkerd.io/inject: enabled
         kubectl.kubernetes.io/default-container: web
     spec:
       containers:
