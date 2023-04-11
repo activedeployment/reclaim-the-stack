@@ -1,13 +1,14 @@
 image: docker.io/reclaimthestack/rails-example:latest
 deployments:
   web:
-    port: 3000
+    port: 80
     replicas: 1
     memory: 512Mi
     cpu: 250m
     env:
       - name: WEB_CONCURRENCY
         value: "2"
+    readinessProbePath: /up
 resources: {}
 envFrom:
   - secretRef:
