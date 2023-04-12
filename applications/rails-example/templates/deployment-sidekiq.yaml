@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-sidekiq
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: {{ .Values.deployments.sidekiq.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-sidekiq
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-sidekiq
+      annotations:
+        linkerd.io/inject: enabled
+        kubectl.kubernetes.io/default-container: sidekiq
+    spec:
+      containers:
+        - name: sidekiq
+          image: {{ .Values.image }}
+          command:
+            - sh
+            - -c
+            - {{ .Values.deployments.sidekiq.command | default "bundle exec sidekiq" }}
+          resources:
+            limits:
+              memory: {{ .Values.deployments.sidekiq.memory }}
+              cpu: {{ .Values.deployments.sidekiq.cpu }}
+          envFrom: {{ .Values.envFrom | toYaml | nindent 12 }}
+          env:
+            {{- if .Values.env }}
+            {{- .Values.env | toYaml | nindent 12 }}
+            {{- end }}
+            {{- if .Values.deployments.sidekiq.env }}
+            {{- .Values.deployments.sidekiq.env | toYaml | nindent 12 }}
+            {{- end }}
